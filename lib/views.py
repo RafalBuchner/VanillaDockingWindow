@@ -1,6 +1,76 @@
 from vanilla import Group, TextBox, GradientButton
-from vanilla.vanillaBase import VanillaBaseObject
-from AppKit import NSColor
+from vanilla.vanillaBase import VanillaBaseObject, _flipFrame
+from AppKit import NSColor, NSPoint
+
+# key = placement, value = (paneDescription index, splitView isVertical)
+dockingOptions = {
+    'top' : (0, True),
+    'bottom' : (-1, True),
+    'left' : (0, False),
+    'right' : (-1, False),
+    'center' : None, # special option that later would create tabbed window
+}
+
+class SimpleRect(VanillaBaseObject):
+    dockingRectThickness = 20
+    dockingRectPosSizes = {
+        'top'    : (0,0,-0,dockingRectThickness),
+        'bottom' : (0,-dockingRectThickness,-0,dockingRectThickness),
+        'left'   : (0,0,dockingRectThickness,-0),
+        'right'  : (-dockingRectThickness,0,dockingRectThickness,-0),
+    }
+    def __init__(self, posSize):
+        self._nsObject = SimpleRectView.alloc().init()
+        self._posSize = posSize
+        self._setAutosizingFromPosSize(posSize)
+
+class DockingGroup(Group):
+    def getParentWindowPosSize(self):
+        parentWindow = self.getNSView().window()
+        frame = parentWindow.frame()
+        l, t, w, h = _flipFrame(parentWindow.screen().visibleFrame(), frame)
+        titlebarHeight = self._calculateParentWindowTitlebarHeight()
+        t += titlebarHeight
+        h -= titlebarHeight
+        return (l, t, w, h)
+
+    def _calculateParentWindowTitlebarHeight(self):
+        parentWindow = self.getNSView().window()
+        windowFrame = parentWindow.frame()
+        contentHeight = parentWindow.contentRectForFrameRect_(windowFrame).size.height
+        titleBarHeight = windowFrame.size.height - contentHeight
+        return titleBarHeight
+
+    def windowIsAbove(self, dockingWindow):
+
+        winX, winY, winW, winH = dockingWindow.getPosSize()
+
+        titleBarHeight = self._calculateParentWindowTitlebarHeight()
+
+
+        x, y = (winX+winW/2, winY - titleBarHeight/2)
+        gx,gy,gw,gh = self.getParentWindowPosSize()
+        titleBarOnDockingGroup = NSPoint(-(gx-x),-(gy-y))
+        print(titleBarOnDockingGroup    )
+        ### WORK HERE!!!
+        ### APPLY THE dockingRectPosSizes TO CHECK WHERE DOCKING WILL TAKE A PLACE!!!
+
+
+
+
+
+class ContentContainerView(DockingGroup):
+    '''
+        content view, that docks the rest of the windows
+    '''
+    def __init__(self, WindowDockReciever):
+        self.WindowDockReciever = WindowDockReciever
+        super(ContentContainerView, self).__init__(posSize=(0, 0, -0, -0), blendingMode=None)
+        self._nsObject.setWantsLayer_(True)
+
+
+
+
 
 class DockedWindowView(Group):
     '''

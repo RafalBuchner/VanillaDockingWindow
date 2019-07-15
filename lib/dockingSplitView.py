@@ -6,14 +6,11 @@ class DockingSplitView(SplitView):
     '''
     def __init__(self, posSize, paneDescriptions, isVertical=True,
             dividerStyle="thin", dividerThickness=None, dividerColor=None,
-            autosaveName=None,
-            # deprecated
-            dividerImage=None):
-        super(SplitView, self).__init__( posSize, paneDescriptions, isVertical=isVertical,
+            autosaveName=None):
+        super(DockingSplitView, self).__init__( posSize, paneDescriptions, isVertical=isVertical,
             dividerStyle=dividerStyle, dividerThickness=dividerThickness, dividerColor=dividerColor,
             autosaveName=autosaveName,
-            # deprecated
-            dividerImage=dividerImage)
+            dividerImage=None)
 
     def set(self, paneDescription):
         self._breakCycles()
