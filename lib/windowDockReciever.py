@@ -1,8 +1,8 @@
 from AppKit import *
 from vanilla.vanillaWindows import *
-from views import LoadedDockingGroup, EmptyDockingGroup
-from helperObjects import *
-from dockingSplitView import DockingSplitView
+from lib.views import LoadedDockingGroup, EmptyDockingGroup
+from lib.dockingWindowList import *
+
 
 
 class WindowDockReciever(Window):
@@ -24,13 +24,14 @@ class WindowDockReciever(Window):
         self.dockingWindows += dockingWindows
         self.dockedWindows = []
 
-        NSEvent.addLocalMonitorForEventsMatchingMask_handler_(NSLeftMouseUpMask, self.mouseUp)
+        NSEvent.addLocalMonitorForEventsMatchingMask_handler_(NSLeftMouseUpMask, self._mouseUp)
 
     @python_method
-    def mouseUp(self, event):
-        print(self.currentlyDockingWinodow_Position)
-        self._dockWindow()
-
+    def _mouseUp(self, event):
+        self._dockWindow(*self.currentlyDockingWinodow_Position)
+        # resetting self.currentlyDockingWinodow_Position to (3*None)
+        # to make sure, that no window will be attached to the reciever
+        # by mistake
         self.currentlyDockingWinodow_Position = (None, None, None)
 
     @python_method
@@ -39,13 +40,7 @@ class WindowDockReciever(Window):
             self.dockWindow(window)
 
     @python_method
-    def _dockWindow(self):
-        dockingWindow, position, dockGroup = self.currentlyDockingWinodow_Position
-
-        self._dockWindowTEST(dockingWindow, position, dockGroup)
-
-    @python_method
-    def _dockWindowTEST(self,dockingWindow, position, dockGroup):
+    def _dockWindow(self, dockingWindow, position, dockingGroup):
         if position is None:
             return
         if isinstance(dockingWindow,Window) \
@@ -56,8 +51,8 @@ class WindowDockReciever(Window):
             # setattr(self, viewName, loadedWindow)
             self.dockedWindows.append(dockingWindow)
             dockingWindow.close()
-            dockGroup._dockToMe(position, loadedWindow)
-            setattr(self, viewName, dockGroup)
+            dockingGroup._dockToMe(position, loadedWindow)
+            setattr(self, viewName, dockingGroup)
             if hasattr(dockingWindow, '_bindings'):
                 dockingWindow.unbind('move', self._dockingWindowMoveCallback)
 
@@ -69,8 +64,8 @@ class WindowDockReciever(Window):
 
     @python_method
     def _dockingWindowMoveCallback(self, dockingWindow):
-        dockingPosition, dockGroup = self._content.windowIsAbove(dockingWindow)
-        self.currentlyDockingWinodow_Position = (dockingWindow, dockingPosition, dockGroup)
+        dockingPosition, dockingGroup = self._content.isWindowOnDockingSide(dockingWindow)
+        self.currentlyDockingWinodow_Position = (dockingWindow, dockingPosition, dockingGroup)
 
     @python_method
     def windowWillClose_(self, notification):
@@ -130,7 +125,7 @@ if __name__ == "__main__":
             self.w._dockWindowTEST(self.w1, 'left', self.w._content)
             self.w._dockWindowTEST(self.w2, 'left', self.w._content)
             self.w._dockWindowTEST(self.w3, 'bottom', self.w._content)
-            self.w._dockWindowTEST(self.w4, 'left', self.w._content)
+            # self.w._dockWindowTEST(self.w4, 'left', self.w._content)
             # self.w._dockWindowTEST(self.w5, 'left', self.w._content) # ERRPR NECAISE OF DIRECTION OF THE CONTENT VIEW
             self.w.open()
 

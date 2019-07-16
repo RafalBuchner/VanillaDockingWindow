@@ -1,7 +1,7 @@
 from vanilla import Group, TextBox, GradientButton
 from vanilla.vanillaBase import VanillaBaseObject, _flipFrame
 from AppKit import NSColor, NSPoint, NSEvent, NSLeftMouseUpMask
-from dockingSplitView import DockingSplitView
+from lib.dockingSplitView import DockingSplitView
 # from copy import deepcopy
 
 titleHeight = 14
@@ -14,13 +14,6 @@ dockingSplitOptions = {
     'right' : (-1, False),
     'center' : None, # special option that later would create tabbed window
 }
-
-class SimpleRect(VanillaBaseObject):
-
-    def __init__(self, posSize):
-        self._nsObject = SimpleRectView.alloc().init()
-        self._posSize = posSize
-        self._setAutosizingFromPosSize(posSize)
 
 
 class AbstractDockingGroup(Group):
@@ -35,27 +28,26 @@ class AbstractDockingGroup(Group):
 
     def __init__(self, posSize=(0, 0, -0, -0), blendingMode=None):
         super(AbstractDockingGroup, self).__init__(posSize=posSize, blendingMode=blendingMode)
+
+        # I'm creating docking areas
         for position in self.dockingRectPosSizes:
-            self.__createDockBar(position)
+            self.__createDockingSide(position)
+
         self.assignedWindows = []
         self.direction = None
         self.splitCount = 0
 
-        # #prev
-        # self.getNSView().setWantsLayer_(True)
-        # self.getNSView().layer().setBackgroundColor_(NSColor.greenColor().CGColor())
-
-    def __createDockBar(self, position):
+    def __createDockingSide(self, position):
         '''
             creates dockbar, which are next to the  edges of the content view
         '''
-        dockBarObj = Group(self.dockingRectPosSizes[position], blendingMode=None)
-        objBarView = dockBarObj.getNSView()
-        objBarView.dockBarPositionName = position
+        dockingSideObj = Group(self.dockingRectPosSizes[position], blendingMode=None)
+        objBarView = dockingSideObj.getNSView()
+        objBarView.dockingSidePositionName = position
         objBarView.setWantsLayer_(True)
         objBarView.layer().setBackgroundColor_(NSColor.clearColor().CGColor())
         objName = f"{position}_dockbar"
-        setattr(self, objName, dockBarObj)
+        setattr(self, objName, dockingSideObj)
 
     def getParentWindowPosSize(self):
         parentWindow = self.getNSView().window()
@@ -74,9 +66,12 @@ class AbstractDockingGroup(Group):
         return titleBarHeight
 
     def mouseDragged(self):
+        #????? DELETE ?????
+        #????? DELETE ?????
+        #????? DELETE ?????
         self.mouseDragged = True
 
-    def windowIsAbove(self, dockingWindow):
+    def isWindowOnDockingSide(self, dockingWindow):
         '''
             checks whenever dragged docking window is above any dock bar
         '''
@@ -87,19 +82,19 @@ class AbstractDockingGroup(Group):
 
         x, y = (winX + winW / 2, winY - titleBarHeight / 2)
         px, py, pw, ph = self.getParentWindowPosSize()
-        titleBarOnDockingGrouploc = NSPoint(pw - (px - x) - pw, (py - y) + ph)
+        titleBarMiddlePoint = NSPoint(pw - (px - x) - pw, (py - y) + ph)
         isDockingWindowAbove = False
         dockingPosition = None
         for position in self.dockingRectPosSizes.keys():
-            dockBarObj = getattr(self, f'{position}_dockbar', None)
-            if dockBarObj is not None:
-                view = dockBarObj.getNSView().hitTest_(titleBarOnDockingGrouploc)
+            dockingSideObj = getattr(self, f'{position}_dockbar', None)
+            if dockingSideObj is not None:
+                view = dockingSideObj.getNSView().hitTest_(titleBarMiddlePoint)
                 if view is not None:
-                    dockBarObj.getNSView().layer().setBackgroundColor_(NSColor.orangeColor().CGColor())
+                    dockingSideObj.getNSView().layer().setBackgroundColor_(NSColor.orangeColor().CGColor())
                     dockingPosition = position
                     isDockingWindowAbove = True
                 else:
-                    dockBarObj.getNSView().layer().setBackgroundColor_(NSColor.clearColor().CGColor())
+                    dockingSideObj.getNSView().layer().setBackgroundColor_(NSColor.clearColor().CGColor())
         if isDockingWindowAbove:
             dockingWindow.getNSWindow().setAlphaValue_(.4)
         else:
@@ -108,8 +103,8 @@ class AbstractDockingGroup(Group):
 
     def _clearColors(self):
         for position in self.dockingRectPosSizes.keys():
-            dockBarObj = getattr(self, f'{position}_dockbar', None)
-            dockBarObj.getNSView().layer().setBackgroundColor_(NSColor.clearColor().CGColor())
+            dockingSideObj = getattr(self, f'{position}_dockbar', None)
+            dockingSideObj.getNSView().layer().setBackgroundColor_(NSColor.clearColor().CGColor())
 
     def _createDockedSplit(self, direction, position, loadedWindow):
         self.direction = direction
