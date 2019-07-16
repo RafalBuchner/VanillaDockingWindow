@@ -162,7 +162,8 @@ The only difference between initialising the WindowDockReciever and vanilla.Wind
 
 ---
 ## AUTHOR COMMENTS
-I should make docking more flexible. For now only one dockGroup responses to docking. I did it just to test if the idea makes sense (AND HURRAY! IT LOOKS IT DOES!).
+- I should make docking more flexible. For now only one dockGroup responses to docking. I did it just to test if the idea makes sense (AND HURRAY! IT LOOKS IT DOES!).
+- `dockingWindowList.DockingWindowList` is not necessary. you can replace easily by adding some methods for adding and removing *dockingWindows* from the regular list object
 
 ## TODO
 - undocking
