@@ -1,5 +1,13 @@
 from vanilla import *
 
+dockingSplitOptions = {
+    'top' : (0, True),
+    'bottom' : (-1, True),
+    'left' : (0, False),
+    'right' : (-1, False),
+    'center' : None, # special option that later would create tabbed window
+}
+
 class DockingSplitView(SplitView):
     '''
         This docking view has an option to reset the paneDescription
@@ -11,6 +19,9 @@ class DockingSplitView(SplitView):
             dividerStyle=dividerStyle, dividerThickness=dividerThickness, dividerColor=dividerColor,
             autosaveName=autosaveName,
             dividerImage=None)
+
+    def get(self):
+        return self._paneDescriptions
 
     def set(self, paneDescription):
         self._breakCycles()

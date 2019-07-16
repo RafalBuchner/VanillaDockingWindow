@@ -1,3 +1,12 @@
+from AppKit import NSWindowController
+import objc
+dockingSplitOptions = {
+    'top' : (0, True),
+    'bottom' : (-1, True),
+    'left' : (0, False),
+    'right' : (-1, False),
+    'center' : None, # special option that later would create tabbed window
+}
 
 class DockingWindowsList(object):
     '''
@@ -12,6 +21,8 @@ class DockingWindowsList(object):
             self.__callEvent(obj, True)
 
     def __callEvent(self, windowObj, bind):
+
+        # MouseDownWindowController.alloc().initWithWindow_(windowObj.getNSWindow())
         if bind:
             windowObj.bind('move', self.WindowDockReciever._dockingWindowMoveCallback)
         else:
