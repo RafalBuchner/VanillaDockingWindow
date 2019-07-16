@@ -97,8 +97,6 @@ executeVanillaTest(DemoDocking)
 The only difference between initialising the WindowDockReciever and vanilla.Window objects is that the first one receives an additional parameter, ‘dockingWindows’. It is a list of vanilla.Window objects that are going to be included in docking operation. Windows outside the list (like `normalWindow` in the example above) won’t be attached to WindowDockReciever object.
 
 #### VI b — User Experience
-User will be able to attach the window to one of the sides of the special window.
-
 ![](images/video.gif)
 
 #### VI c — What is happening?
