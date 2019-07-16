@@ -99,7 +99,7 @@ The only difference between initialising the WindowDockReciever and vanilla.Wind
 #### VI b — User Experience
 User will be able to attach the window to one of the sides of the special window.
 
-![](*/image/video.gif)
+![](images/video.gif)
 
 #### VI c — What is happening?
 1. When WindowDockReciever is being initialised, it creates:\
