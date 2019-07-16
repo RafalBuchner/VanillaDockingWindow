@@ -157,3 +157,24 @@ The only difference between initialising the WindowDockReciever and vanilla.Wind
 	- it closes the *dockingWindow* and unbinds its move event
 
 ---
+
+
+---
+## AUTHOR COMMENTS
+I should make docking more flexible. For now only one dockGroup responses to docking. I did it just to test if the idea makes sense (AND HURRAY! IT LOOKS IT DOES!).
+
+## TODO
+- undocking
+- central docking/creating tabs
+- closing already docked windows
+- dictionary with info about docking behaviour instead of list with windows
+- after I’m done with prototyping I should figure out how autosaveName. I have no idea how to start this 
+
+#### dictionary
+| key            | value                     |
+|:--             |:--                        |
+| window         | `Vanilla.Window` instance |
+|  size          | (`w`, `h`)                |
+| allowPositions | ( `"top"`/`"bottom"`/`"left"`/`"right"`/`"every"` combination of those ) |
+| minSize        | (`w`, `h`)                |
+| maxSize        | (`w`, `h`)                |
