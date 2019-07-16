@@ -1,4 +1,7 @@
 # README
+
+## (THIS IS STILL WORK IN PROGRESS
+
 ## I — Why?
 This project is an experimental extension of Apple’s Cocoa wrapper called Vanilla. Author of this project is a coder and type designer that misses docking functionality in font editor apps like RoboFont or Glyphs. In Robofont author spends too much time on going through many opened windows, floating around. Even if he does his best, the desktop looks like a mess while working. In Glyphs (in which this project mostly won’t work, since it has been written in objective c) he thinks that the arrangement of the windows and tabs is too fixed. Therefore the “virtual workspace” and the workflow variations are strongly influenced and limited by GlyphApp’s creators.
 
